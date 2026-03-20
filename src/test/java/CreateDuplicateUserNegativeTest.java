@@ -18,7 +18,7 @@ public class CreateDuplicateUserNegativeTest extends BaseTest {
     @DisplayName("Test creating a duplicate user")
     @Description("Checks error when create user with same credentials")
     public void testCreateDuplicateUserError() {
-        String[] userData = createUniqueUser();
+
         User user = new User(userData[0], userData[1], userData[2]);
 
         Response response = userPostRequest(Endpoints.REGISTER, user, null);
@@ -26,7 +26,7 @@ public class CreateDuplicateUserNegativeTest extends BaseTest {
 
         keepUser = true;
 
-        userPostRequest(Endpoints.REGISTER, user, null)
+                userPostRequest(Endpoints.REGISTER, user, null)
                 .then()
                 .statusCode(HttpStatus.SC_FORBIDDEN) // Ожидаем ошибку 403
                 .log().all()

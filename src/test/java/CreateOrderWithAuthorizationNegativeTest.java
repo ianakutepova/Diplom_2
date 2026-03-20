@@ -6,13 +6,10 @@ import io.restassured.response.Response;
 import model.Order;
 import model.User;
 import org.junit.Test;
-
 import java.util.Arrays;
 import java.util.List;
-
 import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertNotNull;
 
 public class CreateOrderWithAuthorizationNegativeTest extends BaseTest {
@@ -20,14 +17,11 @@ public class CreateOrderWithAuthorizationNegativeTest extends BaseTest {
     public static String accessToken;
     public static boolean keepUser = false;
 
-
     @Test
     @DisplayName("Test creating an order with missing body")
     @Description("Checks error when create an order without ingredients")
     public void testCreateOrderWithAuthorizationWithoutIngredientsError() {
-        setKeepUser(true); // Устанавливаем keepUser в true для сохранения пользователя после теста
-
-        String[] userData = createUniqueUser();
+        setKeepUser(true);
         User user = new User(userData[0], userData[1], userData[2]);
 
         System.out.println("Registering the user...");
@@ -47,19 +41,18 @@ public class CreateOrderWithAuthorizationNegativeTest extends BaseTest {
                     .statusCode(SC_BAD_REQUEST)
                     .body("success", equalTo(false))
                     .body("message", equalTo("Ingredient ids must be provided"));
-        }
+
         } else {
             System.out.println("Failed to send order: accessToken is null");
         }
-
+    }
 
     @Test
     @DisplayName("Test creating an order with wrong body")
     @Description("Checks error when create an order with wrong hash of ingredients")
     public void testCreateOrderWithAuthorizationWithWrongIngredientsHashError() {
-        setKeepUser(true); // Устанавливаем keepUser в true для сохранения пользователя после теста
+        setKeepUser(true);
 
-        String[] userData = createUniqueUser();
         User user = new User(userData[0], userData[1], userData[2]);
 
         System.out.println("Registering the user...");

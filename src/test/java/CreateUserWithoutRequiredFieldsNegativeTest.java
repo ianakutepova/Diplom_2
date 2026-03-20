@@ -15,7 +15,7 @@ public class CreateUserWithoutRequiredFieldsNegativeTest extends BaseTest {
     @DisplayName("Test create user with missing email")
     @Description("Checks error when create user without email")
     public void testCreateUserWithoutEmailError() {
-        String[] userData = createUniqueUser();
+
         User userWithoutEmail = new User(null, userData[1], userData[2]);
 
         userPostRequest(Endpoints.REGISTER, userWithoutEmail, null)
@@ -30,7 +30,7 @@ public class CreateUserWithoutRequiredFieldsNegativeTest extends BaseTest {
     @DisplayName("Test create user with missing password")
     @Description("Checks error when create user without password")
     public void testCreateUserWithoutPasswordError() {
-        String[] userData = createUniqueUser();
+
         User userWithoutPassword = new User(userData[0], null, userData[2]);
 
         userPostRequest(Endpoints.REGISTER, userWithoutPassword, null)
@@ -45,7 +45,7 @@ public class CreateUserWithoutRequiredFieldsNegativeTest extends BaseTest {
     @DisplayName("Test create a user with missing name")
     @Description("Checks error when create user without name")
     public void testCreateUserWithoutNameError() {
-        String[] userData = createUniqueUser();
+
         User userWithoutName = new User(userData[0], userData[1], null);
 
         userPostRequest(Endpoints.REGISTER, userWithoutName, null)

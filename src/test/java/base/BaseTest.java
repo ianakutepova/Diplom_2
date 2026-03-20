@@ -1,31 +1,36 @@
 package base;
 
 import com.github.javafaker.Faker;
+import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.builder.RequestSpecBuilder;
 import org.junit.After;
 import org.junit.Before;
-import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.*;
 
 public class BaseTest {
     protected RequestSpecification spec;
+    private ApiMethods apiMethods;
     public String accessToken;
-    String[] userData;
+    public String[] userData;
     public boolean keepUser;
 
     public void setKeepUser(boolean keepUser) {
         this.keepUser = keepUser;
     }
+
     @Before
+    @Step
     public void setUp() {
         spec = new RequestSpecBuilder()
                 .setBaseUri(Endpoints.BASE_URL)
                 .setContentType(ContentType.JSON)
                 .build();
         System.out.println("Spec initialized: " + spec);
+
+        apiMethods = new ApiMethods(spec);
 
         userData = createUniqueUser(); // Вызываем метод для создания уникальных данных пользователя перед каждым тестом
     }
@@ -39,56 +44,26 @@ public class BaseTest {
         return new String[]{email, password, name};
     }
 
+
+    @Step
     protected Response userPostRequest(String endpoint, Object body, String accessToken) {
-        if (accessToken != null) {
-            return given()
-                    .spec(spec)
-                    .header("Authorization", "Bearer " + accessToken)
-                    .body(body)
-                    .when()
-                    .post(endpoint);
-        } else {
-            return given()
-                    .spec(spec)
-                    .body(body)
-                    .when()
-                    .post(endpoint);
-        }
+        return apiMethods.userPostRequest(endpoint, body, accessToken);
     }
 
+
+    @Step
     protected Response orderPostRequest(String endpoint, Object body, String accessToken) {
-        if (accessToken != null) {
-            return given()
-                    .spec(spec)
-                    .header("Authorization", accessToken)
-                    .body(body)
-                    .when()
-                    .post(endpoint);
-        } else {
-            return given()
-                    .spec(spec)
-                    .body(body)
-                    .when()
-                    .post(endpoint);
-        }
+        return apiMethods.orderPostRequest(endpoint, body, accessToken);
     }
-
 
     @After
+    @Step
     public void cleanUpUser() {
-
         if (!keepUser && accessToken != null) {
-            deleteUser(accessToken, Endpoints.DELETE)
+            apiMethods.deleteUser(accessToken, Endpoints.DELETE)
                     .then()
                     .statusCode(SC_ACCEPTED);
         }
     }
 
-    private Response deleteUser(String accessToken, String endpoint) {
-        return given()
-                .spec(spec)
-                .header("Authorization", "Bearer " + accessToken)
-                .when()
-                .delete(endpoint);
-    }
 }

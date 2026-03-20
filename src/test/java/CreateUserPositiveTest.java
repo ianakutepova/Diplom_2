@@ -22,12 +22,9 @@ public class CreateUserPositiveTest extends BaseTest {
     public void testCreateUserSuccess() {
         keepUser = false;
 
-        String[] userData = createUniqueUser();
         email = userData[0];
-        password = userData[1];
         name = userData[2];
-
-        User user = new User(email, password, name);
+        User user = new User(userData[0], userData[1], userData[2]);
 
         accessToken = userPostRequest(Endpoints.REGISTER, user, null)
                 .then()
